@@ -217,6 +217,22 @@ services:
       timeout: 10s
       retries: 120
 
+  logstash:
+    depends_on:
+      es01:
+        condition: service_healthy
+      es02:
+        condition: service_healthy
+      es03:
+        condition: service_healthy
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    # volumes:
+    #   - "./logstash/pipeline:/usr/share/logstash/pipeline/"
+    #   - "./logstash/settings/:/usr/share/logstash/config/"
+    environment:
+      - HTTP_HOST=0.0.0.0
+      - MONITORING_ELASTICSEARCH_HOSTS=https://es01:9200
+
 volumes:
   certs:
     driver: local
